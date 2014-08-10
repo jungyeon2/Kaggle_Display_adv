@@ -14,30 +14,38 @@ import os;
 from analysis_lib import *;
 from pandas.core.frame import DataFrame;
 
-file_loc = '/Users/Hadoop/Documents/Kaggle/Display Advertising Challenge/train'
 # train_file = file_loc + 'train.csv'
-
-
-
 
 #Run following shell script to split large train data into smaller subsets
 #split -l 100000 file_loc/filename target_filename
 
 #   read all training subsets
 #   For each subset, get summary
-header = pandas.DataFrame()
-info = []
-for subdir, dirs, files in os.walk(file_loc):
-    for file in files:
-        if file != '.DS_Store':
-            if file.endswith('aa'):
-                header = pandas.read_csv(file_loc+'/'+file, sep=',', nrows=1)
-                f = pandas.read_csv(file_loc+'/'+file, sep=',', skiprows=1, header=None)
-            else:
-                f = pandas.read_csv(file_loc+'/'+file, sep=',')
-            info.append(analysis_lib.describer(f))
+def main():
+    file_loc = '/Users/Hadoop/Documents/Kaggle/Display_Advertising_Challenge/train'
+    header = pandas.DataFrame()
+    info = []
 
-analysis_lib.file_output(info, 'file_info.csv')
+    for subdir, dirs, files in os.walk(file_loc):
+        for file in files:
+            print file
+            if file != '.DS_Store' and file != '.testinput.swp':
+                if file.endswith('aa'):
+                    df_header = pandas.read_csv(file_loc+'/'+file, sep=',', nrows=1)
+                    orignal_header = ['Id','Label','I1','I2','I3','I4','I5','I6','I7','I8','I9','I10','I11','I12','I13','C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12','C13','C14','C15','C16','C17','C18','C19','C20','C21','C22','C23','C24','C25','C26']
+                    header = ['Id','Label','I1','I2','I3','I4','I5','I6','I7','I8','I9','I10','I11','I13','C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12','C13','C14','C15','C16','C17','C18','C19','C20','C21','C22','C23','C24','C25']
+                    # f = pandas.read_csv(file_loc+'/'+file, sep=',', skiprows=1, header=None)
+                    f = pandas.read_csv(file_loc+'/'+file, sep=',', skiprows=1, header=None, names=header)
+                else:
+                    # f = pandas.read_csv(file_loc+'/'+file, sep=',', header=None)
+                    f = pandas.read_csv(file_loc+'/'+file, sep=',', header=None, names=header)
+                # info.append(analysis_lib.describer(f))
+                # f.set_header(header, inplace=True)
+                # print f
+                # analysis_lib.fill_missing_val(f, file)
+                analysis_lib.get_numeric_columns(f,file)
+                # info.append(analysis_lib.outlier_describer(f))
+    # analysis_lib.file_output(info, 'file_info.csv')
 
 
 
@@ -79,3 +87,6 @@ analysis_lib.file_output(info, 'file_info.csv')
 #
 #
 # print logistic_result.summary()
+
+if __name__ == '__main__':
+    main()
